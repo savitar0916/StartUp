@@ -40,23 +40,40 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 echo "安裝 powerlevel10k 主題..." | tee -a startup.log
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k >> startup.log 2>&1 && echo "powerlevel10k 主題安裝成功！" | tee -a startup.log
 
-# 配置插件
-echo "配置插件..." | tee -a startup.log
-sed -i 's/plugins=(git)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' ~/.zshrc >> startup.log 2>&1 && echo "插件配置成功！" | tee -a startup.log
+# 安裝 Meslo Nerd Font
+echo "安裝 Meslo Nerd Font..." | tee -a startup.log
 
-# 檢查並設置 ZSH_THEME
-echo "檢查並設置 ZSH_THEME..." | tee -a startup.log
+## 下載字體檔案
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf >> startup.log 2>&1
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf >> startup.log 2>&1
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf >> startup.log 2>&1
+wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf >> startup.log 2>&1
+
+## 創建字體目錄並移動字體檔案
+mkdir -p ~/.local/share/fonts
+mv MesloLGS* ~/.local/share/fonts/ >> startup.log 2>&1
+
+## 更新字體快取
+fc-cache -f -v >> startup.log 2>&1
+
+echo "Meslo Nerd Font 安裝完成！" | tee -a startup.log
+
+# 設定zsh插件
+echo "設定zsh插件中..." | tee -a startup.log
+sed -i 's/plugins=(git)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' ~/.zshrc >> startup.log 2>&1 && echo "設定zsh插件成功！" | tee -a startup.log
+
+# 檢查並設定 ZSH_THEME
+echo "檢查並設定 ZSH_THEME..." | tee -a startup.log
 if grep -q 'ZSH_THEME=' ~/.zshrc; then
-    sed -i 's|ZSH_THEME=".*"|ZSH_THEME="powerlevel10k/powerlevel10k"|' ~/.zshrc >> startup.log 2>&1 && echo "ZSH_THEME 設置成功！" | tee -a startup.log
+    sed -i 's|ZSH_THEME=".*"|ZSH_THEME="powerlevel10k/powerlevel10k"|' ~/.zshrc >> startup.log 2>&1 && echo "ZSH_THEME 設定成功！" | tee -a startup.log
 else
-    echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> ~/.zshrc && echo "ZSH_THEME 設置成功！" | tee -a startup.log
+    echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> ~/.zshrc && echo "ZSH_THEME 設定成功！" | tee -a startup.log
 fi
 
-# 用新設定替換當前的 shell
-echo "用新設定替換當前的 shell..." | tee -a startup.log
-exec zsh >> startup.log 2>&1 && echo "當前 shell 替換成功！" | tee -a startup.log
+# 設定 p10k
+echo "設定 p10k..." | tee -a startup.log
+p10k configure && echo "p10k 設定成功！" | tee -a startup.log
 
-# 配置 p10k
-echo "配置 p10k..." | tee -a startup.log
-p10k configure && echo "p10k 配置成功！" | tee -a startup.log
-
+# 為用戶切換當前shell
+echo "為用戶切換當前 shell..." | tee -a startup.log
+exec zsh
