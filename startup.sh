@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # 創建或覆蓋 startup.log
 echo "腳本開始執行" > startup.log  
 
@@ -10,7 +12,7 @@ echo "安裝基本的套件..." | tee -a startup.log
 sudo apt install -y vim curl wget git >> startup.log 2>&1 && echo "基本套件安裝成功！" | tee -a startup.log
 
 # 詢問是否要配置時區
-read -p "Do you want to configure the timezone? (y/n) " configure_timezone
+read -p "請問是否需要配置時區? (y/n) " configure_timezone
 if [[ $configure_timezone == [Yy]* ]]; then
     echo "配置時區..." | tee -a startup.log
     sudo timedatectl set-timezone Asia/Taipei >> startup.log 2>&1 && echo "時區配置成功！" | tee -a startup.log
@@ -25,7 +27,7 @@ echo "安裝 oh-my-zsh..." | tee -a startup.log
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc >> startup.log 2>&1 && echo "oh-my-zsh 安裝成功！" | tee -a startup.log
 
 # 將 zsh 設置為當前用戶的默認 shell
-echo "設置 zsh 為默認 shell..." | tee -a startup.log
+echo "設置 zsh 為默認 shell ，請輸入使用者密碼:" | tee -a startup.log
 chsh -s $(which zsh) >> startup.log 2>&1 && echo "zsh 設置為默認 shell 成功！" | tee -a startup.log
 
 # 安裝 zsh-syntax-highlighting 插件
@@ -71,8 +73,8 @@ else
 fi
 
 # 設定 p10k
-echo "設定 p10k..." | tee -a startup.log
-p10k configure && echo "p10k 設定成功！" | tee -a startup.log
+# echo "設定 p10k..." | tee -a startup.log
+# zsh -c "p10k configure && echo 'p10k 設定成功！' | tee -a startup.log"
 
 # 為用戶切換當前shell
 echo "為用戶切換當前 shell..." | tee -a startup.log
